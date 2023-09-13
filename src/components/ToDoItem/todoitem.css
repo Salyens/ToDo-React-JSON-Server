@@ -1,0 +1,67 @@
+#to-do-list li {
+    width: 100%;
+    border: 1px solid black;
+    height: 50px;
+    box-sizing: border-box;
+    padding: 15px;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .to-do-text {
+    flex-basis: 70%;
+    text-align: center;
+    border: none;
+    outline: none;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  
+  .to-do-text:disabled {
+    background: none;
+    color: black;
+  }
+  
+  .to-do-text:focus {
+    border-bottom: 1px solid black;
+  }
+  
+  .edit-delete {
+    flex-basis: 15%;
+    display: flex;
+  }
+  
+  .edit-delete span,
+  .done span {
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 25px;
+  }
+  
+  .done {
+    text-align: right;
+    display: flex;
+  }
+  
+  .edit-delete,
+  .done {
+    font-size: 22px;
+  }
+  
+  .edit-icon,
+  .delete-icon,
+  .done,
+  .undo-icon {
+    cursor: pointer;
+  }
+
+  .to-do-done {
+    text-decoration: line-through;
+  }
+  
+  .line-through {
+    text-decoration: line-through;
+  }
+  

@@ -1,0 +1,16 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+#to-do-list {
+  width: 500px;
+  min-height: 800px;
+  margin: auto;
+  margin-top: 100px;
+}
+
+#to-do-add-wrapper {
+    display: flex;
+    justify-content: space-between;
+  }
