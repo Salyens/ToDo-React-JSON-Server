@@ -6,6 +6,8 @@ import "./app.css";
 
 const App = () => {
   const [toDos, setToDos] = useState([]);
+  const [error, setError] = useState("");
+
   const apiService = new ApiService();
 
   const getAll = () => {
@@ -17,8 +19,8 @@ const App = () => {
 
   return (
     <div id="to-do-list">
-      <ToDoInput onToDoAdd = {setToDos} />
-      <ToDoItemList todos={toDos}/>
+      <ToDoInput onToDoAdd={setToDos} onSetError={{error, setError}} />
+      <ToDoItemList setToDos={setToDos} todos={toDos} onSetError={setError}/>
     </div>
   );
 };

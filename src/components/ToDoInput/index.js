@@ -2,10 +2,10 @@ import { useState } from "react";
 import ApiService from "../../services/ApiService";
 import "./todoinput.css";
 
-const ToDoInput = ({ onToDoAdd }) => {
+const ToDoInput = ({ onToDoAdd, onSetError }) => {
+  const { error, setError } = onSetError;
   const apiService = new ApiService();
   const [toDo, setToDo] = useState("");
-  const [error, setError] = useState("");
 
   const handleCreateToDo = async () => {
     try {
@@ -13,8 +13,13 @@ const ToDoInput = ({ onToDoAdd }) => {
       const newToDo = await apiService.add({ text: toDo, checked: false });
 
       if (newToDo.status === 201) {
-        onToDoAdd((todos) => [...todos, newToDo.data]);
+        onToDoAdd((todos) =>
+          [...todos, newToDo.data]
+            .toSorted((a, b) => b.id - a.id)
+            .toSorted((a, b) => a.checked - b.checked)
+        );
         setToDo("");
+        setError("");
       }
     } catch (_) {
       setError("Something went wrong");
