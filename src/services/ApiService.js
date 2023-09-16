@@ -22,9 +22,9 @@ class ApiService {
     const deleted = await axios.delete(`${this.apiBase}/${id}`);
     return deleted;
   }
-  async done(id) {
+  async done(id, checkedValue) {
     const done = await axios.patch(`${this.apiBase}/${id}`, {
-      checked: true,
+      checked: !checkedValue,
     });
     return done;
   }

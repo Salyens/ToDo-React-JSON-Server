@@ -12,15 +12,20 @@ const App = () => {
 
   const getAll = () => {
     apiService.get().then((res) => {
-      if (res.status === 200) setToDos(res.data);
+      if (res.status === 200)
+        setToDos(
+          res.data
+            .toSorted((a, b) => b.id - a.id)
+            .toSorted((a, b) => a.checked - b.checked)
+        );
     });
   };
   useEffect(() => getAll(), []);
 
   return (
     <div id="to-do-list">
-      <ToDoInput onToDoAdd={setToDos} onSetError={{error, setError}} />
-      <ToDoItemList setToDos={setToDos} todos={toDos} onSetError={setError}/>
+      <ToDoInput onToDoAdd={setToDos} onSetError={{ error, setError }} />
+      <ToDoItemList onSetToDos={{ toDos, setToDos }} onSetError={setError} />
     </div>
   );
 };

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import ToDoItem from "../ToDoItem";
 
-const ToDoItemList = ({ todos, setToDos, onSetError }) => {
+const ToDoItemList = ({ onSetToDos, onSetError }) => {
   const [editId, setEditId] = useState(null);
-
-  if (!todos.length) return "No data";
-  const toDoList = todos.map((todo) => (
-    <ToDoItem setToDos={setToDos} todo={todo} onSetError={onSetError} onSetEditId={{editId, setEditId}} key={`toDoItem-${todo.id}`} />
+  const {toDos, setToDos} = onSetToDos
+  if (!toDos.length) return "No data";
+  const toDoList = toDos.map((toDo) => (
+    <ToDoItem onSetToDos={{toDo, setToDos}} onSetError={onSetError} onSetEditId={{editId, setEditId}} key={`toDoItem-${toDo.id}`} />
   ));
   return <ul>{toDoList}</ul>;
 };
