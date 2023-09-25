@@ -1,68 +1,77 @@
 #to-do-list li {
-    width: 100%;
-    border: 1px solid black;
-    height: 50px;
-    box-sizing: border-box;
-    padding: 15px;
-    margin-top: 10px;
-    padding-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-  }
+  width: 100%;
+  border: 2px solid teal;
+  height: 50px;
+  box-sizing: border-box;
+  padding: 15px;
+  margin-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
 
-  .to-do-text {
-    flex-basis: 70%;
-    text-align: center;
-    border: none;
-    outline: none;
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-  
-  .to-do-text:disabled {
-    background: none;
-    color: black;
-  }
-  
-  .to-do-text:focus {
-    border-bottom: 1px solid black;
-  }
-  
-  .edit-delete {
-    flex-basis: 15%;
-    display: flex;
-  }
-  
-  .edit-delete span,
-  .done span {
-    margin-left: 5px;
-    margin-right: 5px;
-    width: 25px;
-  }
-  
-  .done {
-    text-align: right;
-    display: flex;
-  }
-  
-  .edit-delete,
-  .done {
-    font-size: 22px;
-  }
-  
-  .edit-icon,
-  .delete-icon,
-  .done,
-  .undo-icon {
-    cursor: pointer;
-  }
+}
+.todo-checked {
+  opacity: 0.5;
+}
 
-  .to-do-done {
-    
-    text-decoration: line-through;
-  }
-  
-  .line-through {
-    text-decoration: line-through;
-  }
-  
+.aaaa {
+  font-size: 20px;
+}
+
+.to-do-text {
+  flex-basis: 70%;
+  border: none;
+  outline: none;
+  font-size: 13px;
+}
+
+.to-do-text:disabled {
+  background: none;
+}
+
+.edit-delete {
+  flex-basis: 15%;
+  display: flex;
+}
+
+.edit-delete span,
+.done span {
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 25px;
+  color: teal;
+  transition: 0.4s;
+}
+
+.done {
+  text-align: right;
+  display: flex;
+  color: teal;
+  transition: 0.4s;
+}
+
+.done:hover {
+  color: black;
+}
+.edit-delete span:hover {
+  color: black;
+}
+.done span:hover {
+  color: black;
+}
+
+.edit-delete,
+.done {
+  font-size: 22px;
+}
+
+.edit-icon,
+.delete-icon,
+.done,
+.undo-icon {
+  cursor: pointer;
+}
+
+.line-through {
+  text-decoration: line-through;
+}

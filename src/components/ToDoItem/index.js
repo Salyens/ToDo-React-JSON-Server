@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ApiService from "../../services/ApiService";
+import ToDoContext from "../../contexts/ToDoContext";
 import "./todoitem.css";
 
-const ToDoItem = ({ onSetToDos, onSetError, onSetEditId }) => {
+const ToDoItem = ({ onSetEditId, toDo }) => {
+  const { setToDos, setError } = useContext(ToDoContext);
   const { editId, setEditId } = onSetEditId;
-  const { toDo, setToDos } = onSetToDos;
   const [input, setInput] = useState(toDo.text);
   const apiService = new ApiService();
 
@@ -12,20 +13,21 @@ const ToDoItem = ({ onSetToDos, onSetError, onSetEditId }) => {
     try {
       const deleted = await apiService.delete(toDo.id);
 
-      onSetError("");
+      setError("");
 
       if (deleted.status === 200)
         setToDos((toDoList) => toDoList.filter((item) => item.id !== toDo.id));
     } catch (_) {
-      onSetError("Something went wrong");
+      setError("Something went wrong");
     }
   };
 
   const handleDoneToDo = async () => {
     try {
+      if (editId) return setError("Complete the editing");
       const done = await apiService.done(toDo.id, toDo.checked);
 
-      onSetError("");
+      setError("");
 
       if (done.status === 200) {
         setToDos((toDoList) => {
@@ -40,19 +42,19 @@ const ToDoItem = ({ onSetToDos, onSetError, onSetEditId }) => {
             .toSorted((a, b) => a.checked - b.checked);
         });
       }
-
     } catch (_) {
-      onSetError("Something went wrong");
+      setError("Something went wrong");
     }
   };
 
   const handleUpdateToDo = async (mode) => {
     try {
       if (toDo.checked)
-        return onSetError("It's impossible to change a completed task");
-      onSetError("");
+        return setError("It's impossible to change a completed task");
+      setError("");
       if (mode === "edit") setEditId(toDo.id);
       else if (mode === "save") {
+        if (!input) return setError("Empty value is not allowed");
         const updated = await apiService.update(toDo.id, input);
 
         if (updated) {
@@ -70,17 +72,23 @@ const ToDoItem = ({ onSetToDos, onSetError, onSetEditId }) => {
           setEditId(null);
         }
       }
-    } catch (_) {}
+    } catch (_) {
+      setError("Something went wrong");
+    }
   };
 
   return (
-    <li>
+    <li
+      className={
+        toDo.checked ? "todo-checked todo-enter todo-enter-active" : ""
+      }
+    >
       <div className="edit-delete">
         <span className="edit-icon">
-          {Boolean(editId) && editId === toDo.id && !toDo.checked ? (
+          {Boolean(editId) && editId === toDo.id ? (
             <i
               onClick={() => handleUpdateToDo("save")}
-              className="fa fa-save"
+              className="fa fa-save edit-active"
             ></i>
           ) : (
             <i

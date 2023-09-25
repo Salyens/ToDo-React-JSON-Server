@@ -3,6 +3,7 @@ import ToDoInput from "../ToDoInput";
 import ToDoItemList from "../ToDoItemList";
 import ApiService from "../../services/ApiService";
 import "./app.css";
+import ToDoContext from "../../contexts/ToDoContext";
 
 const App = () => {
   const [toDos, setToDos] = useState([]);
@@ -24,8 +25,10 @@ const App = () => {
 
   return (
     <div id="to-do-list">
-      <ToDoInput onToDoAdd={setToDos} onSetError={{ error, setError }} />
-      <ToDoItemList onSetToDos={{ toDos, setToDos }} onSetError={setError} />
+      <ToDoContext.Provider value={{ toDos, setToDos, error, setError }}>
+        <ToDoInput />
+        <ToDoItemList />
+      </ToDoContext.Provider>
     </div>
   );
 };

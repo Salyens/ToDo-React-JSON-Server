@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ApiService from "../../services/ApiService";
+import ToDoContext from "../../contexts/ToDoContext";
 import "./todoinput.css";
 
-const ToDoInput = ({ onToDoAdd, onSetError }) => {
-  const { error, setError } = onSetError;
-  const apiService = new ApiService();
+const ToDoInput = () => {
+  const { error, setError, setToDos } = useContext(ToDoContext);
   const [toDo, setToDo] = useState("");
+  const apiService = new ApiService();
 
   const handleCreateToDo = async () => {
     try {
@@ -13,7 +14,7 @@ const ToDoInput = ({ onToDoAdd, onSetError }) => {
       const newToDo = await apiService.add({ text: toDo, checked: false });
 
       if (newToDo.status === 201) {
-        onToDoAdd((todos) =>
+        setToDos((todos) =>
           [...todos, newToDo.data]
             .toSorted((a, b) => b.id - a.id)
             .toSorted((a, b) => a.checked - b.checked)
@@ -28,6 +29,7 @@ const ToDoInput = ({ onToDoAdd, onSetError }) => {
 
   return (
     <>
+      <h1 className="title">ToDo App</h1>
       {error && <div id="msg">{error}</div>}
       <div id="to-do-add-wrapper">
         <input
@@ -35,6 +37,7 @@ const ToDoInput = ({ onToDoAdd, onSetError }) => {
           onInput={(event) => setToDo(event.target.value)}
           type="text"
           id="to-do-input"
+          placeholder="Enter your task"
           required
         />
         <button onClick={handleCreateToDo} id="to-do-add">
