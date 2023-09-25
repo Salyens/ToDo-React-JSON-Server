@@ -1,13 +1,24 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ToDoItem from "../ToDoItem";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+import ToDoContext from "../../contexts/ToDoContext";
+import "./todoitemlist.css";
 
-const ToDoItemList = ({ todos, setToDos, onSetError }) => {
+const ToDoItemList = () => {
   const [editId, setEditId] = useState(null);
+  const { toDos } = useContext(ToDoContext);
+  if (!toDos.length) return "No data";
 
-  if (!todos.length) return "No data";
-  const toDoList = todos.map((todo) => (
-    <ToDoItem setToDos={setToDos} todo={todo} onSetError={onSetError} onSetEditId={{editId, setEditId}} key={`toDoItem-${todo.id}`} />
-  ));
-  return <ul>{toDoList}</ul>;
+  return (
+    <TransitionGroup>
+      {toDos.map((toDo) => (
+        <CSSTransition key={toDo.id} timeout={500} classNames="todo">
+          <ul>
+            <ToDoItem toDo={toDo} onSetEditId={{ editId, setEditId }} />
+          </ul>
+        </CSSTransition>
+      ))}
+    </TransitionGroup>
+  );
 };
 export default ToDoItemList;

@@ -1,29 +1,38 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ApiService from "../../services/ApiService";
+import ToDoContext from "../../contexts/ToDoContext";
 import "./todoitem.css";
 
-const ToDoItem = ({ todo, setToDos, onSetError, onSetEditId }) => {
+const ToDoItem = ({ onSetEditId, toDo }) => {
+  const { setToDos, setError } = useContext(ToDoContext);
   const { editId, setEditId } = onSetEditId;
+  const [input, setInput] = useState(toDo.text);
   const apiService = new ApiService();
-  const [input, setInput] = useState(todo.text);
 
   const handleDeleteToDo = async () => {
     try {
-      const deleted = await apiService.delete(todo.id);
+      const deleted = await apiService.delete(toDo.id);
+
+      setError("");
+
       if (deleted.status === 200)
-        setToDos((toDoList) => toDoList.filter((item) => item.id !== todo.id));
+        setToDos((toDoList) => toDoList.filter((item) => item.id !== toDo.id));
     } catch (_) {
-      onSetError("Something went wrong");
+      setError("Something went wrong");
     }
   };
 
   const handleDoneToDo = async () => {
     try {
-      const done = await apiService.done(todo.id);
+      if (editId) return setError("Complete the editing");
+      const done = await apiService.done(toDo.id, toDo.checked);
+
+      setError("");
+
       if (done.status === 200) {
         setToDos((toDoList) => {
           const newToDoList = toDoList.map((item) => {
-            if (item.id === todo.id) {
+            if (item.id === toDo.id) {
               item.checked = !item.checked;
             }
             return item;
@@ -34,41 +43,58 @@ const ToDoItem = ({ todo, setToDos, onSetError, onSetEditId }) => {
         });
       }
     } catch (_) {
-      onSetError("Something went wrong");
+      setError("Something went wrong");
     }
   };
 
   const handleUpdateToDo = async (mode) => {
     try {
-      setEditId(todo.id);
+      if (toDo.checked)
+        return setError("It's impossible to change a completed task");
+      setError("");
+      if (mode === "edit") setEditId(toDo.id);
+      else if (mode === "save") {
+        if (!input) return setError("Empty value is not allowed");
+        const updated = await apiService.update(toDo.id, input);
 
-      const updated = await apiService.update(todo.id, input);
-
-      if (updated) {
-        setToDos((toDoList) => {
-          const newToDoList = toDoList.map((item) => {
-            if (item.id === todo.id) {
-              item = updated;
-            }
-            return item;
+        if (updated) {
+          setToDos((toDoList) => {
+            const newToDoList = toDoList.map((item) => {
+              if (item.id === toDo.id) {
+                item = updated.data;
+              }
+              return item;
+            });
+            return newToDoList
+              .toSorted((a, b) => b.id - a.id)
+              .toSorted((a, b) => a.checked - b.checked);
           });
-          return newToDoList
-            .toSorted((a, b) => b.id - a.id)
-            .toSorted((a, b) => a.checked - b.checked);
-        });
-        setEditId(null);
+          setEditId(null);
+        }
       }
-    } catch (_) {}
+    } catch (_) {
+      setError("Something went wrong");
+    }
   };
 
   return (
-    <li>
+    <li
+      className={
+        toDo.checked ? "todo-checked todo-enter todo-enter-active" : ""
+      }
+    >
       <div className="edit-delete">
-        <span onClick={()=> handleUpdateToDo('save')} className="edit-icon">
-          {editId && editId === todo.id ? (
-            <i className="fa fa-save"></i>
+        <span className="edit-icon">
+          {Boolean(editId) && editId === toDo.id ? (
+            <i
+              onClick={() => handleUpdateToDo("save")}
+              className="fa fa-save edit-active"
+            ></i>
           ) : (
-            <i className="fa fa-edit"></i>
+            <i
+              onClick={() => handleUpdateToDo("edit")}
+              className="fa fa-edit"
+            ></i>
           )}
         </span>
         <span onClick={handleDeleteToDo} className="delete-icon">
@@ -76,10 +102,14 @@ const ToDoItem = ({ todo, setToDos, onSetError, onSetEditId }) => {
         </span>
       </div>
       <input
-        className={todo.checked ? "line-through to-do-text" : "to-do-text"}
+        className={toDo.checked ? "line-through to-do-text" : "to-do-text"}
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        disabled={Boolean(editId)}
+        disabled={
+          Boolean(editId) && editId !== toDo.id
+            ? Boolean(editId)
+            : !Boolean(editId)
+        }
       />
       <div onClick={handleDoneToDo} className="done">
         <i className="fa fa-check-circle"></i>

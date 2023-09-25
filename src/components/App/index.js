@@ -3,6 +3,7 @@ import ToDoInput from "../ToDoInput";
 import ToDoItemList from "../ToDoItemList";
 import ApiService from "../../services/ApiService";
 import "./app.css";
+import ToDoContext from "../../contexts/ToDoContext";
 
 const App = () => {
   const [toDos, setToDos] = useState([]);
@@ -12,15 +13,22 @@ const App = () => {
 
   const getAll = () => {
     apiService.get().then((res) => {
-      if (res.status === 200) setToDos(res.data);
+      if (res.status === 200)
+        setToDos(
+          res.data
+            .toSorted((a, b) => b.id - a.id)
+            .toSorted((a, b) => a.checked - b.checked)
+        );
     });
   };
   useEffect(() => getAll(), []);
 
   return (
     <div id="to-do-list">
-      <ToDoInput onToDoAdd={setToDos} onSetError={{error, setError}} />
-      <ToDoItemList setToDos={setToDos} todos={toDos} onSetError={setError}/>
+      <ToDoContext.Provider value={{ toDos, setToDos, error, setError }}>
+        <ToDoInput />
+        <ToDoItemList />
+      </ToDoContext.Provider>
     </div>
   );
 };

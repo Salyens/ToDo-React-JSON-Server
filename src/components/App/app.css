@@ -2,15 +2,20 @@
   margin: 0px;
   padding: 0px;
 }
-
+.title{
+  width: 500px;
+  text-align: center;
+}
 #to-do-list {
   width: 500px;
   min-height: 800px;
   margin: auto;
-  margin-top: 100px;
+  margin-top: 30px;
 }
 
 #to-do-add-wrapper {
     display: flex;
     justify-content: space-between;
   }
+
+  
