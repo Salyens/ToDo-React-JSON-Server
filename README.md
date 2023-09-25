@@ -1,5 +1,5 @@
 # ToDo App
-Overview:
+Overview :
 This project is a straightforward, user-friendly ToDo application built using React. It allows users to manage their daily tasks efficiently, providing features for creating, updating, and deleting tasks.
 
 Features:
