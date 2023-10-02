@@ -5,6 +5,7 @@ import "./todoinput.css";
 
 const ToDoInput = () => {
   const { error, setError, setToDos } = useContext(ToDoContext);
+  console.log(setToDos);
   const [toDo, setToDo] = useState("");
   const apiService = new ApiService();
 
@@ -14,11 +15,14 @@ const ToDoInput = () => {
       const newToDo = await apiService.add({ text: toDo, checked: false });
 
       if (newToDo.status === 201) {
-        setToDos((todos) =>
-          [...todos, newToDo.data]
-            .toSorted((a, b) => b.id - a.id)
-            .toSorted((a, b) => a.checked - b.checked)
-        );
+
+        setToDos((state) => {
+
+          // state.toDos = [...state.toDos, newToDo.data]
+          //   .toSorted((a, b) => b.id - a.id)
+          //   .toSorted((a, b) => a.checked - b.checked);
+          // return state;
+        });
         setToDo("");
         setError("");
       }
