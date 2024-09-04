@@ -1,34 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ToDoInput from "../ToDoInput";
 import ToDoItemList from "../ToDoItemList";
-import ApiService from "../../services/ApiService";
 import "./app.css";
-import ToDoContext from "../../contexts/ToDoContext";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTodos } from "../../store/todoSlice";
 
 const App = () => {
-  const [toDos, setToDos] = useState([]);
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const { status, error } = useSelector(
+    (state) => state.todos
+  );
 
-  const apiService = new ApiService();
-
-  const getAll = () => {
-    apiService.get().then((res) => {
-      if (res.status === 200)
-        setToDos(
-          res.data
-            .toSorted((a, b) => b.id - a.id)
-            .toSorted((a, b) => a.checked - b.checked)
-        );
-    });
-  };
-  useEffect(() => getAll(), []);
+  useEffect(() => {
+    dispatch(fetchTodos());
+  }, [dispatch]);
 
   return (
     <div id="to-do-list">
-      <ToDoContext.Provider value={{ toDos, setToDos, error, setError }}>
-        <ToDoInput />
-        <ToDoItemList />
-      </ToDoContext.Provider>
+      {status === "loading" && <h2>Loading...</h2>}
+      {error && <h2>An error occurred: {error}</h2>}
+      <ToDoInput />
+      <ToDoItemList />
     </div>
   );
 };

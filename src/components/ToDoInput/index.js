@@ -1,36 +1,17 @@
-import { useContext, useState } from "react";
-import ApiService from "../../services/ApiService";
-import ToDoContext from "../../contexts/ToDoContext";
+import { useState } from "react";
+
 import "./todoinput.css";
+import { useDispatch } from "react-redux";
+import { addNewTodo } from "../../store/todoSlice";
 
 const ToDoInput = () => {
-  const { error, setError, setToDos } = useContext(ToDoContext);
   const [toDo, setToDo] = useState("");
-  const apiService = new ApiService();
-
-  const handleCreateToDo = async () => {
-    try {
-      if (!toDo.trim()) return setError("Invalid text");
-      const newToDo = await apiService.add({ text: toDo, checked: false });
-
-      if (newToDo.status === 201) {
-        setToDos((todos) =>
-          [...todos, newToDo.data]
-            .toSorted((a, b) => b.id - a.id)
-            .toSorted((a, b) => a.checked - b.checked)
-        );
-        setToDo("");
-        setError("");
-      }
-    } catch (_) {
-      setError("Something went wrong");
-    }
-  };
+  const dispatch = useDispatch();
 
   return (
     <>
       <h1 className="title">ToDo App</h1>
-      {error && <div id="msg">{error}</div>}
+      {/* {error && <div id="msg">{error}</div>} */}
       <div id="to-do-add-wrapper">
         <input
           value={toDo}
@@ -40,7 +21,10 @@ const ToDoInput = () => {
           placeholder="Enter your task"
           required
         />
-        <button onClick={handleCreateToDo} id="to-do-add">
+        <button
+          onClick={() => dispatch(addNewTodo(toDo))}
+          id="to-do-add"
+        >
           <i className="fa fa-plus"></i>
         </button>
       </div>
